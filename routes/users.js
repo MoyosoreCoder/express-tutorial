@@ -1,34 +1,39 @@
-const express = require("express")
-const app = express.Router()
+const express = require("express");
+const router = express.Router();
 
-
+// Route for "/users/"
 router.get("/", (req, res) => {
   res.send("Hello users");
 });
-//always put a dynamic route up bofore the :id
+
+// Route for "/users/new"
 router.get("/new", (req, res) => {
   res.send("Hello new users");
-})
+});
 
+//post request
 router.post("/", (req, res) => {
-  res.send("create user")
-})
-//dynamic route with parameter
-router.get("/:d", (req, res) => {
-  res.send(`User is ${req.param.id}`)
-})
+  res.send("Create user");
+});
 
-router.put("/:d", (req, res) => {
-  res.send(`update a user with ${req.param.id}`)
-})
-router.delete("/:d", (req, res) => {
-  res.send(`delete a user with ${req.param.id}`)
-})
+// Dynamic routes should be below static ones
+router
+  .route("/:id")
+  .get((req, res) => {
+    res.send(`User is ${req.params.id}`);
+  })
+  .delete((req, res) => {
+    res.send(`Deleted user with ID ${req.params.id}`);
+  })
+  .put((req, res) => {
+    res.send(`Updated user with ID ${req.params.id}`);
+  });
 
+// Param middleware (fixed syntax)
+router.param("id", (req, res, next, id) => {
+  console.log(`User ID: ${id}`);
+  next(); // Proceed to next middleware
+});
 
-
-//listen to server
-app.listen(3000);
-
-
-module.exports = router
+// Export router
+module.exports = router;
